@@ -3,7 +3,7 @@ import random
 import streamlit as st
 import matplotlib.pyplot as plt
 
-# Function to generate random walking-related coordinates
+# Function to generate standard random walking-related coordinates
 def generate_coordinates():
     LEX = round(random.uniform(0.1, 0.2), 3)
     LEY = round(random.uniform(0.43, 0.46), 3)
@@ -14,6 +14,14 @@ def generate_coordinates():
     MTX = round(random.uniform(0.0, 0.05), 3)
     MTY = round(random.uniform(0.0, 0.01), 3)
     return LEX, LEY, LMX, LMY, CX, CY, MTX, MTY
+
+# Function to generate dorsiflexed condition (positive ankle angle)
+def generate_dorsiflexed_coordinates(LEX, LEY, LMX, LMY):
+    CX = round(random.uniform(-0.15, -0.05), 3)
+    CY = round(LMY - 0.14, 3)  # about 14 cm lower than Lateral Malleolus
+    MTX = round(CX + random.uniform(0.04, 0.07), 3)  # Toes forward
+    MTY = round(CY + random.uniform(0.02, 0.04), 3)  # Toes slightly higher than heel
+    return CX, CY, MTX, MTY
 
 # Function to calculate absolute angles with quadrant corrections
 def calculate_absolute_angle(proximal_x, proximal_y, distal_x, distal_y):
@@ -45,7 +53,7 @@ st.title("Leg Angle, Foot Angle, and Ankle Relative Angle Practice App")
 # Problem Statement
 st.subheader("Problem Statement")
 st.markdown("""
-The data below is (x,y) position coordinates of a person's lower leg and foot. It's a ballet dancer attempting en pointe. 
+The data below are (x,y) position coordinates of a person's lower leg and foot during walking.
 Use the data to estimate:
 - Absolute angle of the leg segment
 - Absolute angle of the foot segment
@@ -68,7 +76,7 @@ student_foot_angle = st.number_input("Your estimated absolute foot angle (degree
 student_ankle_angle = st.number_input("Your estimated relative ankle angle (degrees):", step=0.1, key='ankle')
 
 # Buttons
-col1, col2, col3, col4, col5 = st.columns(5)
+col1, col2, col3, col4, col5, col6 = st.columns(6)
 
 with col1:
     if st.button("Check Leg Angle"):
@@ -99,6 +107,16 @@ with col5:
     if st.button("🔄 Try Another Problem"):
         st.session_state.LEX, st.session_state.LEY, st.session_state.LMX, st.session_state.LMY, st.session_state.CX, st.session_state.CY, st.session_state.MTX, st.session_state.MTY = generate_coordinates()
         st.session_state.leg_angle = calculate_absolute_angle(st.session_state.LEX, st.session_state.LEY, st.session_state.LMX, st.session_state.LMY)
+        st.session_state.foot_angle = calculate_absolute_angle(st.session_state.CX, st.session_state.CY, st.session_state.MTX, st.session_state.MTY)
+        st.session_state.ankle_angle = round(st.session_state.foot_angle - st.session_state.leg_angle - 90, 1)
+        st.session_state.show_how = False
+        st.rerun()
+
+with col6:
+    if st.button("🔄 Try When Ankle is Dorsiflexed"):
+        # Keep leg the same but modify foot for dorsiflexed condition
+        st.session_state.CX, st.session_state.CY, st.session_state.MTX, st.session_state.MTY = generate_dorsiflexed_coordinates(
+            st.session_state.LEX, st.session_state.LEY, st.session_state.LMX, st.session_state.LMY)
         st.session_state.foot_angle = calculate_absolute_angle(st.session_state.CX, st.session_state.CY, st.session_state.MTX, st.session_state.MTY)
         st.session_state.ankle_angle = round(st.session_state.foot_angle - st.session_state.leg_angle - 90, 1)
         st.session_state.show_how = False
