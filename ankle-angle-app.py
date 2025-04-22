@@ -17,8 +17,8 @@ def generate_coordinates():
 
 # Function to generate dorsiflexed condition (positive ankle angle)
 def generate_dorsiflexed_coordinates(LEX, LEY, LMX, LMY):
-    CX = round(random.uniform(-0.06, -0.04), 3)
-    CY = round(LMY - 0.05, 3)  # about 5 cm lower than Lateral Malleolus
+    CX = round(random.uniform(-0.01, 0), 3)
+    CY = round(LMY - 0.03, 3)  # about 5 cm lower than Lateral Malleolus
     MTX = round(CX + random.uniform(0.14, 0.17), 3)  # Toes forward
     MTY = round(CY + random.uniform(0.02, 0.04), 3)  # Toes slightly higher than heel
     return CX, CY, MTX, MTY
@@ -36,7 +36,7 @@ def calculate_absolute_angle(proximal_x, proximal_y, distal_x, distal_y):
     elif delta_x < 0 and delta_y > 0:  # Quadrant 2 
         angle_deg += 0
     elif delta_x < 0 and delta_y < 0:  # Quadrant 3
-        angle_deg += 0
+        angle_deg += 360
     elif delta_x > 0 and delta_y < 0:  # Quadrant 4
         angle_deg += 360
 
