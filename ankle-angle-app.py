@@ -45,7 +45,7 @@ st.title("Leg Angle, Foot Angle, and Ankle Relative Angle Practice App")
 # Problem Statement
 st.subheader("Problem Statement")
 st.markdown("""
-The data below is (x,y) position coordinates of a person's lower leg and foot during walking. 
+The data below is (x,y) position coordinates of a person's lower leg and foot. It's a ballet dancer attempting en pointe. 
 Use the data to estimate:
 - Absolute angle of the leg segment
 - Absolute angle of the foot segment
@@ -102,7 +102,7 @@ with col5:
         st.session_state.foot_angle = calculate_absolute_angle(st.session_state.CX, st.session_state.CY, st.session_state.MTX, st.session_state.MTY)
         st.session_state.ankle_angle = round(st.session_state.foot_angle - st.session_state.leg_angle - 90, 1)
         st.session_state.show_how = False
-        st.experimental_rerun()
+        st.rerun()
 
 # Explanation and Plot
 if st.session_state.show_how:
